@@ -25,7 +25,7 @@ do
     continue
   fi
 
-  ln -sf "$src" "$tgt"
+  ln -sTf "$src" "$tgt"
 done < <(find "$DCIM_PATH" -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -print0)
 
 cd /app
