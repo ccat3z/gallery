@@ -37,4 +37,5 @@ fi
 
 exec node ./src/backend/index --expose-gc --config-path=/app/data/config/config.json \
     --Client-authenticationRequired=false \
+    --Client-Sharing-enabled=false \
     --Server-Media-folder="$MEDIA_FOLDER"
