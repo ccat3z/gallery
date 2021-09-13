@@ -21,7 +21,7 @@ do
     passwd_var=GOCRYPTFS_PASS_$dir
     passwd="${!passwd_var}"
     [ -d "$tgt" ] || mkdir -p "$tgt"
-    gocryptfs -passfile <(echo "$passwd") -ro "$src" "$tgt"
+    gocryptfs -fg -passfile <(echo "$passwd") -ro "$src" "$tgt" &
     continue
   fi
 
@@ -35,7 +35,9 @@ if [ -n "$*" ]; then
     exec "$@"
 fi
 
-exec node ./src/backend/index --expose-gc --config-path=/app/data/config/config.json \
+node ./src/backend/index --expose-gc --config-path=/app/data/config/config.json \
     --Client-authenticationRequired=false \
     --Client-Sharing-enabled=false \
-    --Server-Media-folder="$MEDIA_FOLDER"
+    --Server-Media-folder="$MEDIA_FOLDER" &
+
+wait -n
