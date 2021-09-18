@@ -11,8 +11,11 @@ MEDIA_FOLDER=/var/lib/gallery
 
 [ -d "$MEDIA_FOLDER" ] || mkdir -p "$MEDIA_FOLDER"
 
+MEDIA_SUBFOLDERS_COUNT=0
 while IFS= read -r -d '' src
 do
+  MEDIA_SUBFOLDERS_COUNT=$((MEDIA_SUBFOLDERS_COUNT + 1))
+
   dir=$(basename "$src")
   tgt=$MEDIA_FOLDER/$dir
   log "Loading sub directory '$dir'..."
@@ -27,6 +30,11 @@ do
 
   ln -sTf "$src" "$tgt"
 done < <(find "$DCIM_PATH" -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -print0)
+
+if [ "$MEDIA_SUBFOLDERS_COUNT" = 0 ]; then
+  log "No subfolder found"
+  exit 1
+fi
 
 cd /app
 
