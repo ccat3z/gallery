@@ -4,6 +4,7 @@ services:
     container_name: gallery
     build:
       context: .
+    image: c0ldcat/gallery:latest
     env_file: [.env.pass]
     ports:
       - 0.0.0.0:3012:80
