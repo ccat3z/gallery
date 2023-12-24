@@ -7,7 +7,7 @@ log () {
 }
 
 DCIM_PATH="${DCIM_PATH:=/data}"
-MEDIA_FOLDER=/var/lib/gallery
+MEDIA_FOLDER=/app/data/images
 
 [ -d "$MEDIA_FOLDER" ] || mkdir -p "$MEDIA_FOLDER"
 
@@ -43,9 +43,4 @@ if [ -n "$*" ]; then
     exec "$@"
 fi
 
-node ./src/backend/index --expose-gc --config-path=/app/data/config/config.json \
-    --Client-authenticationRequired=false \
-    --Client-Sharing-enabled=false \
-    --Server-Media-folder="$MEDIA_FOLDER" &
-
-wait -n
+exec node ./src/backend/index --expose-gc --config-path=/app/data/config/config.json

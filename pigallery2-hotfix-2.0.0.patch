@@ -1,0 +1,12 @@
+diff --git a/src/frontend/app/ui/gallery/grid/grid.gallery.component.ts b/src/frontend/app/ui/gallery/grid/grid.gallery.component.ts
+index fa93b692..e1fa7fea 100644
+--- a/src/frontend/app/ui/gallery/grid/grid.gallery.component.ts
++++ b/src/frontend/app/ui/gallery/grid/grid.gallery.component.ts
+@@ -403,6 +403,7 @@ export class GalleryGridComponent
+       this.router.navigate([], {queryParams: this.queryService.getParams()});
+       return;
+     }
++    return;
+     // Make sure that at leas one more row is rendered
+     // It is possible that only the last few pixels of a photo is visible,
+     // so not required to render more, but the scrollbar does not trigger more photos to render
