@@ -6,9 +6,12 @@ log () {
     echo -e "\e[36m>>>\e[0m $*"
 }
 
-DCIM_PATH="${DCIM_PATH:=/data}"
 MEDIA_FOLDER=/app/data/images
 
+if [ -z "$GALLERY_PATH" ]; then
+    log "\$GALLERY_PATH is empty"
+    exit 1
+fi
 [ -d "$MEDIA_FOLDER" ] || mkdir -p "$MEDIA_FOLDER"
 
 MEDIA_SUBFOLDERS_COUNT=0
@@ -20,27 +23,23 @@ do
   tgt=$MEDIA_FOLDER/$dir
   log "Loading sub directory '$dir'..."
 
+  [ -d "$tgt" ] || mkdir -p "$tgt"
   if [ -f "$src/gocryptfs.conf" ]; then
     passwd_var=GOCRYPTFS_PASS_$dir
     passwd="${!passwd_var}"
-    [ -d "$tgt" ] || mkdir -p "$tgt"
-    gocryptfs -fg -passfile <(echo "$passwd") -ro "$src" "$tgt" &
-    continue
+    gocryptfs \
+        -passfile <(echo "$passwd") \
+        -rw \
+        -allow_other \
+        "$src" "$tgt"
+  else
+    mount --bind "$src" "$tgt"
   fi
-
-  ln -sTf "$src" "$tgt"
-done < <(find "$DCIM_PATH" -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -print0)
+done < <(find "$GALLERY_PATH" -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -print0)
 
 if [ "$MEDIA_SUBFOLDERS_COUNT" = 0 ]; then
   log "No subfolder found"
   exit 1
-fi
-
-cd /app
-
-# For debug
-if [ -n "$*" ]; then
-    exec "$@"
 fi
 
 exec node ./src/backend/index --expose-gc --config-path=/app/data/config/config.json
